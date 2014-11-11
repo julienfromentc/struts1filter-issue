@@ -52,7 +52,8 @@ java.lang.NullPointerException
 Running the application:
 ===================
 This sample application expects to have a Apache Tomcat 7.0.X installation located at C:/tomcat in order to compile.
-The application can be run with ecipse, with a Tomcat 7 server
+
+The application can be run with eclipse, with a Tomcat 7 server
 
 
 TODO:
