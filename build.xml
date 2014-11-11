@@ -1,0 +1,90 @@
+<project name="webstatus"  default="all"  basedir=".">
+
+	<property environment="env"/>
+	<!-- If environment variable XMBLD_ROOT is not set, set relative value -->
+	<property name="work.root" value="${env.XMBLD_ROOT}" />
+
+	<!-- ==================== File and Directory Names ======================== -->
+	<property name="app.name" value="sample"/>
+	<property name="app.path" value="/${app.name}"/>
+	<property name="web.home" value="${basedir}/web"/>
+	<property name="war.dir"  value="${basedir}"/>	
+	<property name="src.home" value="${basedir}/src"/>
+	<property name="class.dir" value="${basedir}/classes"/>
+	<property name="tomcat.home" value="C:/tomcat"/>
+
+	<!-- ==================== Compilation Classpath =========================== -->
+	<path id="compile.classpath">
+		<path id="tomcat.classpath">
+			<pathelement location="${tomcat.home}/lib/servlet-api.jar"/>
+			<pathelement location="${tomcat.home}/lib/jsp-api.jar"/>
+			<pathelement location="${tomcat.home}/lib/jasper.jar"/>
+			<pathelement location="${tomcat.home}/lib/catalina.jar"/>
+		</path>
+		
+	</path>
+	
+	<!-- ==================== All Target ====================================== -->
+	<target name="all" depends="compile, war"
+	        description="Clean build directory, then compiles and build war"/>
+
+	<!-- ==================== Java doc Target =================================== -->
+	
+	<!-- ==================== Prepare Target ================================== -->
+	<!-- target used to create the "build" destination directory and copy the
+	     static contents of your web application to it -->
+	<target name="prepare" depends="">
+		<!-- Create build directories as needed -->
+		<mkdir dir="${build.home}"/>
+		<mkdir dir="${build.home}/WEB-INF"/>
+		<mkdir dir="${build.home}/WEB-INF/classes"/>
+		<mkdir dir="${build.home}/WEB-INF/lib"/>
+
+		<copy todir="${build.home}">
+			<fileset dir="${web.home}" />
+		</copy>
+
+		<!-- Resource files in source tree -->
+		<copy todir="${build.home}/WEB-INF/classes">
+			<fileset dir="${src.home}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- ==================== Compile Target ================================== -->
+	<!--
+      The "compile" target transforms source files (from your "src" directory)
+      into object files in the appropriate location in the build directory.
+      This example assumes that you will be including your classes in an
+      unpacked directory hierarchy under "/WEB-INF/classes".
+    -->
+	<target name="compile" depends="prepare" description="Compile Java sources">
+		<mkdir dir="${build.home}/WEB-INF/classes"/>
+		<javac
+		         destdir="${build.home}/WEB-INF/classes"
+		         debug="${compile.debug}"
+		         deprecation="${compile.deprecation}"
+		         optimize="${compile.optimize}"
+		         encoding="ISO-8859-1">
+			<src path="${src.home}"/>
+			<compilerarg value="-Xlint:-unchecked"/>
+			<classpath refid="compile.classpath"/>
+			<classpath>
+				<fileset dir="${basedir}/web/WEB-INF/lib">
+					<include name="**/*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+	
+	<!-- ==================== Clean Targets ==================================== -->
+	<target name="clean" description="Delete build directory and the war file">
+		<delete dir="${build.home}"/>
+		<delete file="${basedir}/${app.name}.war"/>
+	</target>
+	
+	<target name="war" description="Create binary distribution">
+		<jar jarfile="${war.dir}/${app.name}.war" basedir="${build.home}"/>
+	</target>
+</project>

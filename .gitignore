@@ -1,0 +1,9 @@
+.git
+.override
+bin
+build
+fax.war
+sample.war
+reports
+.pmd
+/build

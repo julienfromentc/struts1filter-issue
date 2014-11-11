@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC 
+       "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" 
+       "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+    
+    <!-- ========== Data Source Configuration =============================== -->
+    
+    <!-- ========== Form Bean Definitions ================================== -->
+    <form-beans>
+        <form-bean name="SubmitForm" type="com.jfroment.sample.form.SubmitForm" /> 
+        <form-bean name="ResultForm" type="com.jfroment.sample.form.ResultForm" />           
+    </form-beans>
+    
+    <!-- ========== Action Mapping Definitions =============================== -->
+
+     <action-mappings type="org.apache.struts.action.ActionMapping">
+       <action name="SubmitForm"
+               scope="request"
+               parameter="dispatch" 
+               path="/submit"
+               input="/submit.jsp"
+               type="com.jfroment.sample.action.SubmitAction">
+  		   <forward name="sentStatus" path="/result.do?dispatch=displayForm" module=""/>
+   		   <forward name="sendFax" path="/submit.do?dispatch=sendFax" module=""/>
+   		   <forward name="displayForm" path="/submit.do?dispatch=displayForm&amp;faxSettingsCustomized={0}&amp;senderInfoCustomized={1}" module=""/>
+       </action>
+       <action name="ResultForm"
+               parameter="dispatch" 
+               scope="request"
+               path="/result"
+               input="/result.jsp"
+               type="com.jfroment.sample.action.ResultAction">
+           <forward name="displayForm" path="/result.do?dispatch=displayForm" module=""/>		
+       </action>
+       
+    </action-mappings>
+    
+    <!-- ========== Controller Configuration ================================ -->
+
+    <!-- ========== Plug Ins Configuration ================================= -->
+    
+    <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+        <set-property property="pathnames" value="/WEB-INF/strut/validator-rules.xml,
+                                                  /WEB-INF/strut/validation-definition.xml,
+                                                  /WEB-INF/strut/validation-main.xml"/>
+    </plug-in> 
+</struts-config>
+
